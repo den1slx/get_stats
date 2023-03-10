@@ -172,7 +172,7 @@ def create_parser():
         default={
             'professional_role': '96',
             'area': '1',
-            'period': '30',
+            'date_from': '2000-01-01',
             'per_page': 100,
         }
     )

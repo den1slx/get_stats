@@ -107,7 +107,6 @@ def get_hh_statistics(texts, hh_update_params):
     stats = {}
     for text in texts:
         salaries = []
-        redacted_salaries = []
         page = 0
         pages = 1
         found = 0
@@ -129,9 +128,7 @@ def get_hh_statistics(texts, hh_update_params):
                 for vacancy in vacancies:
                     salaries.append(predict_rub_salary(vacancy))
 
-        for salary in salaries:
-            if salary:
-                redacted_salaries.append(salary)
+        redacted_salaries = [salary for salary in salaries if salary]
         if redacted_salaries:
             average_salaries = sum(redacted_salaries) // len(redacted_salaries)
         else:

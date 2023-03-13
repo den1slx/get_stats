@@ -56,10 +56,17 @@ def get_superjob_statistics(token, texts, params_update):
             }
             params.update(params_update)
             response = requests.get(url, headers=headers, params=params)
+            if not response.ok:
+                stats[text] = {
+                    "vacancies_found": None,
+                    "vacancies_processed": None,
+                    "average_salary": None,
+                }
+                break
             response_json = response.json()
             if not total:
                 total = response_json['total']
-                if total == 0:
+                if not total:
                     break
             if not response_json['objects']:
                 break
@@ -122,6 +129,11 @@ def get_hh_statistics(texts, hh_update_params):
             response = requests.get(url, params=params)
             response_json = response.json()
             if not response.ok:
+                stats[text] = {
+                    "vacancies_found": None,
+                    "vacancies_processed": None,
+                    "average_salary": None,
+                }
                 break
             else:
                 if not found:
@@ -211,7 +223,6 @@ def main():
     print(table_hh.table)
     print(table_sj.table)
     print(end - start)
-# 145.30198168754578
 
 
 if __name__ == '__main__':

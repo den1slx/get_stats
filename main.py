@@ -36,13 +36,13 @@ def predict_rub_salary_for_superjob(vacancy):
     return predict_salary(payment_from, payment_to)
 
 
-def get_superjob_statistics(token, keywords, params_update):
+def get_superjob_statistics(token, texts, params_update):
     url = 'https://api.superjob.ru/2.0/vacancies/'
     headers = {
         'X-Api-App-Id': token,
     }
     stats = {}
-    for keyword in keywords:
+    for text in texts:
         page = 0
         total = 0
         processed_total = 0
@@ -51,7 +51,7 @@ def get_superjob_statistics(token, keywords, params_update):
         while True:
             params = {
                 "page": page,
-                "keyword": keyword,
+                "keyword": text,
             }
             params.update(params_update)
             response = requests.get(url, headers=headers, params=params)
@@ -78,7 +78,7 @@ def get_superjob_statistics(token, keywords, params_update):
                 break
             page += 1
 
-        stats[keyword] = {
+        stats[text] = {
             'vacancies_found': total,
             'vacancies_processed': processed_total,
             'average_salary': average_salary,

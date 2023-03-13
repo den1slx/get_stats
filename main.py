@@ -69,7 +69,7 @@ def get_superjob_statistics(token, keywords, params_update):
                     average_salaries.append(average_salary)
                     processed_total += 1
 
-            if processed_total == 0:
+            if not processed_total:
                 average_salary = 0
             else:
                 average_salary = sum(average_salaries) // processed_total
@@ -132,7 +132,7 @@ def get_hh_statistics(texts, hh_update_params):
         for salary in salaries:
             if salary:
                 redacted_salaries.append(salary)
-        if len(redacted_salaries) > 0:
+        if redacted_salaries:
             average_salaries = sum(redacted_salaries) // len(redacted_salaries)
         else:
             average_salaries = 0

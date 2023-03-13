@@ -6,15 +6,15 @@ import argparse
 
 
 def predict_rub_salary(vacancy):
-    if vacancy.get('salary') and vacancy['salary']:
-        (salary_from, salary_to,
-         salary_currency, *salary_other) = vacancy['salary'].values()
-        if salary_currency != 'RUR':
-            return None
-        salary = predict_salary(salary_from, salary_to)
-        return salary
-    else:
+    if not vacancy.get('salary'):
         return None
+    if not vacancy['salary']:
+        return None
+    salary_from, salary_to, salary_currency, *salary_other = vacancy['salary'].values()
+    if salary_currency != 'RUR':
+        return None
+    salary = predict_salary(salary_from, salary_to)
+    return salary
 
 
 def predict_salary(payment_from, payment_to):

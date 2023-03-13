@@ -161,6 +161,7 @@ def create_parser():
     parser.add_argument(
         '-t',
         '--texts',
+        nargs='+',
         help='''list strings for text in hh_params and 
         keyword in sj_params''',
         default=[
@@ -181,6 +182,7 @@ def create_parser():
         '--hh_params',
         help='''params for hh request,
         {text: '', page: ''} not should in params''',
+        nargs='+',
         default={
             'professional_role': '96',
             'area': '1',

@@ -102,10 +102,10 @@ def stats_for_table(stats, table_headers=None):
     return stats_for_table
 
 
-def get_hh_statistics(text, hh_update_params):
+def get_hh_statistics(texts, hh_update_params):
     url = 'https://api.hh.ru/vacancies'
     stats = {}
-    for lang in text:
+    for text in texts:
         salaries = []
         redacted_salaries = []
         page = 0
@@ -114,7 +114,7 @@ def get_hh_statistics(text, hh_update_params):
         while page < pages:
             page += 1
             params = {
-                'text': lang,
+                'text': text,
                 'page': page,
             }
             params.update(hh_update_params)
@@ -136,7 +136,7 @@ def get_hh_statistics(text, hh_update_params):
             average_salaries = sum(redacted_salaries) // len(redacted_salaries)
         else:
             average_salaries = 0
-        stats[lang] = {
+        stats[text] = {
             "vacancies_found": found,
             "vacancies_processed": len(redacted_salaries),
             "average_salary": average_salaries,

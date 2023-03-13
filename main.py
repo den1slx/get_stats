@@ -87,7 +87,7 @@ def get_superjob_statistics(token, keywords, params_update):
     return stats
 
 
-def stats_for_table(stats, table_headers=None):
+def get_stats_for_table(stats, table_headers=None):
     stats_for_table = []
     if table_headers:
         stats_for_table.append(table_headers)
@@ -202,8 +202,8 @@ def main():
     table_headers = ['keywords', 'total', 'total processed', 'average salary']
     statistics_hh = get_hh_statistics(texts, hh_params)
     statistics_sj = get_superjob_statistics(sj_token, texts, sj_params)
-    statistics_for_table_hh = stats_for_table(statistics_hh, table_headers=table_headers)
-    statistics_for_table_sj = stats_for_table(statistics_sj, table_headers=table_headers)
+    statistics_for_table_hh = get_stats_for_table(statistics_hh, table_headers=table_headers)
+    statistics_for_table_sj = get_stats_for_table(statistics_sj, table_headers=table_headers)
     table_hh = AsciiTable(statistics_for_table_hh, title='hh for moscow')
     table_sj = AsciiTable(statistics_for_table_sj, title='SuperJob for moscow')
 

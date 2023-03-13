@@ -3,6 +3,7 @@ from terminaltables import AsciiTable
 import os
 from dotenv import load_dotenv
 import argparse
+from time import time
 
 
 def predict_rub_salary(vacancy):
@@ -55,13 +56,14 @@ def get_superjob_statistics(token, texts, params_update):
             }
             params.update(params_update)
             response = requests.get(url, headers=headers, params=params)
+            response_json = response.json()
             if not total:
-                total = response.json()['total']
+                total = response_json['total']
                 if total == 0:
                     break
-            if not response.json()['objects']:
+            if not response_json['objects']:
                 break
-            vacancies = response.json()['objects']
+            vacancies = response_json['objects']
             for vacancy in vacancies:
                 if vacancy:
                     average_salary = predict_rub_salary_for_superjob(vacancy)
@@ -73,7 +75,7 @@ def get_superjob_statistics(token, texts, params_update):
                 average_salary = 0
             else:
                 average_salary = sum(average_salaries) // processed_total
-            more = response.json()['more']
+            more = response_json['more']
             if not more:
                 break
             page += 1
@@ -118,13 +120,14 @@ def get_hh_statistics(texts, hh_update_params):
             }
             params.update(hh_update_params)
             response = requests.get(url, params=params)
+            response_json = response.json()
             if not response.ok:
                 break
             else:
                 if not found:
-                    found = response.json()['found']
-                pages = response.json()['pages']
-                vacancies = response.json()['items']
+                    found = response_json['found']
+                pages = response_json['pages']
+                vacancies = response_json['items']
                 for vacancy in vacancies:
                     salaries.append(predict_rub_salary(vacancy))
 
@@ -189,6 +192,7 @@ def create_parser():
 
 
 def main():
+    start = time()
     load_dotenv()
     parser = create_parser()
     namespace = parser.parse_args()
@@ -203,9 +207,11 @@ def main():
     statistics_for_table_sj = get_stats_for_table(statistics_sj, table_headers=table_headers)
     table_hh = AsciiTable(statistics_for_table_hh, title='hh for moscow')
     table_sj = AsciiTable(statistics_for_table_sj, title='SuperJob for moscow')
-
+    end = time()
     print(table_hh.table)
     print(table_sj.table)
+    print(end - start)
+# 145.30198168754578
 
 
 if __name__ == '__main__':

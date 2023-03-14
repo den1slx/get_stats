@@ -3,7 +3,6 @@ from terminaltables import AsciiTable
 import os
 from dotenv import load_dotenv
 import argparse
-from time import time
 import json
 
 
@@ -220,7 +219,6 @@ def create_parser():
 
 
 def main():
-    start = time()
     load_dotenv()
     parser = create_parser()
     namespace = parser.parse_args()
@@ -235,10 +233,8 @@ def main():
     statistics_for_table_sj = get_stats_for_table(statistics_sj, table_headers=sj_headers)
     table_hh = AsciiTable(statistics_for_table_hh, title='headhunter')
     table_sj = AsciiTable(statistics_for_table_sj, title='SuperJob')
-    end = time()
     print(table_hh.table)
     print(table_sj.table)
-    print(end - start)
 
 
 if __name__ == '__main__':

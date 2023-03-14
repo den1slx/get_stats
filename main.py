@@ -4,6 +4,7 @@ import os
 from dotenv import load_dotenv
 import argparse
 from time import time
+import json
 
 
 def predict_rub_salary(vacancy):
@@ -182,25 +183,38 @@ def create_parser():
         '--hh_params',
         help='''params for hh request,
         {text: '', page: ''} not should in params''',
-        nargs='+',
-        default={
-            'professional_role': '96',
-            'area': '1',
-            'date_from': '2000-01-01',
-            'per_page': 100,
-        }
+        default='{"professional_role": "96", "area": "1", "date_from": "2000-01-01", "per_page": 100}'
     )
     parser.add_argument(
         '-sp',
         '--sj_params',
         help='''params for superjob,
         {keyword: '', keywords: '', page: ''} not should in params''',
-        default={
-            "period": 0,
-            "town": 4,
-            "catalogues": 48,
-            "count": 100,
-        }
+        default='{"period": 0, "town": 4, "catalogues": 48, "count": 100}'
+    )
+    parser.add_argument(
+        '-thh',
+        '--table_headers_hh',
+        help='headers for table hh',
+        nargs='+',
+        default=[
+            'keywords',
+            'total',
+            'total processed',
+            'average salary',
+        ],
+    )
+    parser.add_argument(
+        '-tsj',
+        '--table_headers_sj',
+        help='headers for table superjob',
+        nargs='+',
+        default=[
+            'keywords',
+            'total',
+            'total processed',
+            'average salary',
+        ],
     )
     return parser
 
@@ -210,17 +224,17 @@ def main():
     load_dotenv()
     parser = create_parser()
     namespace = parser.parse_args()
+    hh_headers, sj_headers = namespace.table_headers_hh, namespace.table_headers_sj
     texts = namespace.texts
-    hh_params = namespace.hh_params
-    sj_params = namespace.sj_params
+    hh_params = json.loads(namespace.hh_params)
+    sj_params = json.loads(namespace.sj_params)
     sj_token = os.environ['SJ_SECRET_KEY']
-    table_headers = ['keywords', 'total', 'total processed', 'average salary']
     statistics_hh = get_hh_statistics(texts, hh_params)
     statistics_sj = get_superjob_statistics(sj_token, texts, sj_params)
-    statistics_for_table_hh = get_stats_for_table(statistics_hh, table_headers=table_headers)
-    statistics_for_table_sj = get_stats_for_table(statistics_sj, table_headers=table_headers)
-    table_hh = AsciiTable(statistics_for_table_hh, title='hh for moscow')
-    table_sj = AsciiTable(statistics_for_table_sj, title='SuperJob for moscow')
+    statistics_for_table_hh = get_stats_for_table(statistics_hh, table_headers=hh_headers)
+    statistics_for_table_sj = get_stats_for_table(statistics_sj, table_headers=sj_headers)
+    table_hh = AsciiTable(statistics_for_table_hh, title='headhunter')
+    table_sj = AsciiTable(statistics_for_table_sj, title='SuperJob')
     end = time()
     print(table_hh.table)
     print(table_sj.table)

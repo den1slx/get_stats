@@ -100,10 +100,10 @@ def get_stats_for_table(stats, table_headers=None):
     stats_for_table = []
     if table_headers:
         stats_for_table.append(table_headers)
-    for stat in stats:
+    for name, stat in stats.items():
         chapter = []
-        chapter.append(stat)
-        values = list(stats[stat].values())
+        chapter.append(name)
+        values = stat.values()
         for value in values:
             chapter.append(value)
         stats_for_table.append(chapter)

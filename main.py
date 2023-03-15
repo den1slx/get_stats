@@ -63,14 +63,14 @@ def get_superjob_statistics(token, texts, params_update):
                     "average_salary": None,
                 }
                 break
-            response_json = response.json()
+            unpacked_response = response.json()
             if not total:
-                total = response_json['total']
+                total = unpacked_response['total']
                 if not total:
                     break
-            if not response_json['objects']:
+            if not unpacked_response['objects']:
                 break
-            vacancies = response_json['objects']
+            vacancies = unpacked_response['objects']
             for vacancy in vacancies:
                 if vacancy:
                     average_salary = predict_rub_salary_for_superjob(vacancy)
@@ -82,7 +82,7 @@ def get_superjob_statistics(token, texts, params_update):
                 average_salary = 0
             else:
                 average_salary = sum(average_salaries) // processed_total
-            more = response_json['more']
+            more = unpacked_response['more']
             if not more:
                 break
             page += 1
@@ -127,7 +127,7 @@ def get_hh_statistics(texts, hh_update_params):
             }
             params.update(hh_update_params)
             response = requests.get(url, params=params)
-            response_json = response.json()
+            unpacked_response = response.json()
             if not response.ok:
                 stats[text] = {
                     "vacancies_found": None,
@@ -137,9 +137,9 @@ def get_hh_statistics(texts, hh_update_params):
                 break
             else:
                 if not found:
-                    found = response_json['found']
-                pages = response_json['pages']
-                vacancies = response_json['items']
+                    found = unpacked_response['found']
+                pages = unpacked_response['pages']
+                vacancies = unpacked_response['items']
                 for vacancy in vacancies:
                     salaries.append(predict_rub_salary(vacancy))
 

@@ -37,13 +37,13 @@ def predict_rub_salary_for_superjob(vacancy):
     return predict_salary(payment_from, payment_to)
 
 
-def get_superjob_statistics(token, texts, params_update):
+def get_superjob_statistics(token, strings, params_update):
     url = 'https://api.superjob.ru/2.0/vacancies/'
     headers = {
         'X-Api-App-Id': token,
     }
     stats = {}
-    for text in texts:
+    for string in strings:
         page = 0
         total = 0
         processed_total = 0
@@ -52,12 +52,12 @@ def get_superjob_statistics(token, texts, params_update):
         while True:
             params = {
                 "page": page,
-                "keyword": text,
+                "keyword": string,
             }
             params.update(params_update)
             response = requests.get(url, headers=headers, params=params)
             if not response.ok:
-                stats[text] = {
+                stats[string] = {
                     "vacancies_found": None,
                     "vacancies_processed": None,
                     "average_salary": None,
@@ -87,7 +87,7 @@ def get_superjob_statistics(token, texts, params_update):
                 break
             page += 1
 
-        stats[text] = {
+        stats[string] = {
             'vacancies_found': total,
             'vacancies_processed': processed_total,
             'average_salary': average_salary,
@@ -111,10 +111,10 @@ def get_stats_for_table(stats, table_headers=None):
     return stats_for_table
 
 
-def get_hh_statistics(texts, hh_update_params):
+def get_hh_statistics(strings, hh_update_params):
     url = 'https://api.hh.ru/vacancies'
     stats = {}
-    for text in texts:
+    for string in strings:
         salaries = []
         page = 0
         pages = 1
@@ -122,14 +122,14 @@ def get_hh_statistics(texts, hh_update_params):
         while page < pages:
             page += 1
             params = {
-                'text': text,
+                'text': string,
                 'page': page,
             }
             params.update(hh_update_params)
             response = requests.get(url, params=params)
             unpacked_response = response.json()
             if not response.ok:
-                stats[text] = {
+                stats[string] = {
                     "vacancies_found": None,
                     "vacancies_processed": None,
                     "average_salary": None,
@@ -148,7 +148,7 @@ def get_hh_statistics(texts, hh_update_params):
             average_salaries = sum(redacted_salaries) // len(redacted_salaries)
         else:
             average_salaries = 0
-        stats[text] = {
+        stats[string] = {
             "vacancies_found": found,
             "vacancies_processed": len(redacted_salaries),
             "average_salary": average_salaries,
@@ -159,8 +159,8 @@ def get_hh_statistics(texts, hh_update_params):
 def create_parser():
     parser = argparse.ArgumentParser()
     parser.add_argument(
-        '-t',
-        '--texts',
+        '-s',
+        '--strings',
         nargs='+',
         help='''list strings for text in hh_params and 
         keyword in sj_params''',
@@ -223,12 +223,12 @@ def main():
     parser = create_parser()
     args = parser.parse_args()
     hh_headers, sj_headers = args.table_headers_hh, args.table_headers_sj
-    texts = args.texts
+    strings = args.strings
     hh_params = json.loads(args.hh_params)
     sj_params = json.loads(args.sj_params)
     sj_token = os.environ['SJ_SECRET_KEY']
-    statistics_hh = get_hh_statistics(texts, hh_params)
-    statistics_sj = get_superjob_statistics(sj_token, texts, sj_params)
+    statistics_hh = get_hh_statistics(strings, hh_params)
+    statistics_sj = get_superjob_statistics(sj_token, strings, sj_params)
     statistics_for_table_hh = get_stats_for_table(statistics_hh, table_headers=hh_headers)
     statistics_for_table_sj = get_stats_for_table(statistics_sj, table_headers=sj_headers)
     table_hh = AsciiTable(statistics_for_table_hh, title='headhunter')

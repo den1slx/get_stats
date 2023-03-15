@@ -21,7 +21,7 @@ python main.py
 ```
 Передаем keywords для поиска
 ```commandline
-python main.py -t "Программист Python", "Программист C#" 
+python main.py -s "Программист Python", "Программист C#" 
 ```
 Передаем параметры для поиска в hh. Это должна быть json строка.
 [Подробнее про параметры поиска](https://github.com/hhru/api/blob/master/docs/vacancies.md#search)
@@ -45,7 +45,7 @@ python main.py -tsj "Заг", "оло", "вок", "особый"
 
 Можно и всё вместе:
 ```commandline
-python main.py -t "программист python" -thh "1", "2", "3", "4" -tsj "5", "6", "7", "8" -hp '{\"professional_role\"
+python main.py -s "программист python" -thh "1", "2", "3", "4" -tsj "5", "6", "7", "8" -hp '{\"professional_role\"
 : \"96\",\"area\": \"1\", \"date_from\": \"2000-01-01\", \"per_page\": 100}' -sp '{\"period\": 0, \"town\": 4, \"catalogues\": 48, \"count\": 100}'
 
 ```

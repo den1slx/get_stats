@@ -221,11 +221,11 @@ def create_parser():
 def main():
     load_dotenv()
     parser = create_parser()
-    namespace = parser.parse_args()
-    hh_headers, sj_headers = namespace.table_headers_hh, namespace.table_headers_sj
-    texts = namespace.texts
-    hh_params = json.loads(namespace.hh_params)
-    sj_params = json.loads(namespace.sj_params)
+    args = parser.parse_args()
+    hh_headers, sj_headers = args.table_headers_hh, args.table_headers_sj
+    texts = args.texts
+    hh_params = json.loads(args.hh_params)
+    sj_params = json.loads(args.sj_params)
     sj_token = os.environ['SJ_SECRET_KEY']
     statistics_hh = get_hh_statistics(texts, hh_params)
     statistics_sj = get_superjob_statistics(sj_token, texts, sj_params)

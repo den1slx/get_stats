@@ -37,7 +37,7 @@ def predict_rub_salary_for_superjob(vacancy):
     return predict_salary(payment_from, payment_to)
 
 
-def get_superjob_statistics(token, strings, params_update):
+def get_superjob_statistics(token, strings, sj_params):
     url = 'https://api.superjob.ru/2.0/vacancies/'
     headers = {
         'X-Api-App-Id': token,
@@ -54,7 +54,7 @@ def get_superjob_statistics(token, strings, params_update):
                 "page": page,
                 "keyword": string,
             }
-            params.update(params_update)
+            params.update(sj_params)
             response = requests.get(url, headers=headers, params=params)
             if not response.ok:
                 stats[string] = {
@@ -111,7 +111,7 @@ def get_stats_for_table(stats, table_headers=None):
     return stats_for_table
 
 
-def get_hh_statistics(strings, hh_update_params):
+def get_hh_statistics(strings, hh_params):
     url = 'https://api.hh.ru/vacancies'
     stats = {}
     for string in strings:
@@ -125,7 +125,7 @@ def get_hh_statistics(strings, hh_update_params):
                 'text': string,
                 'page': page,
             }
-            params.update(hh_update_params)
+            params.update(hh_params)
             response = requests.get(url, params=params)
             unpacked_response = response.json()
             if not response.ok:
